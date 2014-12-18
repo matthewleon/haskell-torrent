@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Data.Torrent.SHA1
+-- Module      :  Data.Torrent.Scrape
 -- Copyright   :  (c) Lemmih 2005
 -- License     :  BSD-like
 --
@@ -17,8 +17,8 @@ module Data.Torrent.Scrape
 
 import Data.Char
 import Data.BEncode
-import qualified Data.ByteString.Char8 as BS
-import Data.ByteString (ByteString)
+import qualified Data.ByteString.Lazy.Char8 as BS
+import Data.ByteString.Lazy (ByteString)
 import System.FilePath
 import qualified Data.Map as Map
 
@@ -36,8 +36,8 @@ parseScrapeInfo bs
                   BInt seeders <- Map.lookup "complete" dict'
                   BInt peers   <- Map.lookup "incomplete" dict'
                   return $ ScrapeInfo
-                             { scrapeSeeds = seeders
-                             , scrapeLeechers = peers }
+                             { scrapeSeeds = fromIntegral seeders
+                             , scrapeLeechers = fromIntegral peers }
         _ -> Nothing
 
 scrapeUrl :: ByteString -> [String] -> Maybe String
