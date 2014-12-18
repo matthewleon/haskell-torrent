@@ -1,5 +1,5 @@
 Name: torrent
-Version: 2007.10.27
+Version: 10000.0.0
 Cabal-Version: >= 1.6
 Maintainer: Joey Hess <id@joeyh.name>
 Author: Lemmih <lemmih@gmail.com>
@@ -8,6 +8,7 @@ License-File: LICENSE
 License: BSD3
 Build-Type: Simple
 Category: Network
+Extra-Source-Files: CHANGELOG
 Synopsis: BitTorrent file parser
 Description:
  A simple parser for torrent files.
