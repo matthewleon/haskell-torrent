@@ -26,8 +26,8 @@ import System.FilePath
 import qualified Data.Map as Map
 
 data ScrapeInfo = ScrapeInfo
-    { scrapeSeeds    :: Int
-    , scrapeLeechers :: Int
+    { scrapeSeeds    :: Integer
+    , scrapeLeechers :: Integer
     } deriving (Read,Show)
 
 parseScrapeInfo :: ByteString -> Maybe ScrapeInfo
@@ -39,8 +39,8 @@ parseScrapeInfo bs
                   BInt seeders <- Map.lookup "complete" dict'
                   BInt peers   <- Map.lookup "incomplete" dict'
                   return $ ScrapeInfo
-                             { scrapeSeeds = fromIntegral seeders
-                             , scrapeLeechers = fromIntegral peers }
+                             { scrapeSeeds = seeders
+                             , scrapeLeechers = peers }
         _ -> Nothing
 
 scrapeUrl :: ByteString -> [String] -> Maybe String

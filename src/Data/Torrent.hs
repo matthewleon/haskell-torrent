@@ -31,21 +31,21 @@ data Torrent
 
 data TorrentInfo
 	= SingleFile
-		{ tLength      :: Int
+		{ tLength      :: Integer
 		, tName        :: ByteString
-		, tPieceLength :: Int
+		, tPieceLength :: Integer
 		, tPieces      :: ByteString }
 	| MultiFile
 		{ tFiles       :: [TorrentFile]
 		, tName        :: ByteString
-		, tPieceLength :: Int
+		, tPieceLength :: Integer
 		, tPieces      :: ByteString
 		}
 	deriving (Show, Read, Typeable, Data)
 
 data TorrentFile
 	= TorrentFile
-		{ fileLength :: Int
+		{ fileLength :: Integer
 		, filePath   :: [ByteString]
 		}
 	deriving (Show, Read, Typeable, Data)
@@ -59,7 +59,7 @@ instance Binary Torrent where
 			Right t  -> return t
 
 -- | Size of the files in the torrent.
-torrentSize :: Torrent -> Int
+torrentSize :: Torrent -> Integer
 torrentSize torrent = case tInfo torrent of
 	s@SingleFile{} -> tLength s
 	MultiFile{tFiles=files} -> sum (map fileLength files)
@@ -78,20 +78,20 @@ parseTorrent = do
 	name <- bbytestring $ dict "name"
 	pLen <- bint $ dict "piece length"
 	pieces <- bbytestring $ dict "pieces"
-	torrentInfo <- parseTorrentInfo name (fromIntegral pLen) pieces
+	torrentInfo <- parseTorrentInfo name pLen pieces
 	return $ Torrent announce [] BS.empty creator torrentInfo
 
-parseTorrentInfo :: ByteString -> Int -> ByteString -> BParser TorrentInfo
+parseTorrentInfo :: ByteString -> Integer -> ByteString -> BParser TorrentInfo
 parseTorrentInfo name pLen pieces = single <|> multi
   where
 	single = do
 		len <- bint $ dict "length"
-		return $ SingleFile (fromIntegral len) name (fromIntegral pLen) pieces
+		return $ SingleFile len name pLen pieces
 	multi = do
 		files <- list "files" $ do
 			len <- bint $ dict "length"
 			filePaths <- list "path" $ bbytestring token
-			return $ TorrentFile (fromIntegral len) filePaths
+			return $ TorrentFile len filePaths
 		return $ MultiFile files name pLen pieces
 
 serializeTorrent :: Torrent -> BEncode
@@ -104,14 +104,14 @@ serializeTorrent torrent = BDict $ Map.fromList
 	info = BDict $ Map.fromList $
 		[ ("name", BString $ tName (tInfo torrent))
 		, ("pieces", BString $ tPieces (tInfo torrent))
-		, ("piece length", BInt $ fromIntegral $ tPieceLength (tInfo torrent))
+		, ("piece length", BInt $ tPieceLength (tInfo torrent))
 		] ++ case tInfo torrent of
 			SingleFile len _ _ _ ->
-				[ ("length", BInt $ fromIntegral len) ]
+				[ ("length", BInt len) ]
 			MultiFile files _ _ _ ->
 				[ ("files", BList $ map serfile files) ]
 
 	serfile file = BDict $ Map.fromList
-		[ ("length", BInt (fromIntegral (fileLength file)))
+		[ ("length", BInt (fileLength file))
 		, ("path", BList (map BString $ filePath file))
 		]
