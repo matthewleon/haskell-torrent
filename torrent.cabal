@@ -1,15 +1,14 @@
 Name: torrent
 Version: 2007.10.27
-Maintainer: Lemmih (lemmih@gmail.com)
-Author: Lemmih (lemmih@gmail.com)
+Maintainer: Joey Hess <id@joeyh.name>
+Author: Lemmih <lemmih@gmail.com>
 Copyright: 2005-2007, Lemmih
 License-File: LICENSE
 License: BSD3
 Build-Depends: base, binary, bencode >=0.2, filepath, network, containers, bytestring, syb
+Build-Type: Simple
 Category: Network
-Synopsis: BitTorrent file parser.
-Tested-with: GHC ==6.6
-Extensions: ForeignFunctionInterface, PatternGuards
+Synopsis: BitTorrent file parser
 Exposed-Modules:
   Data.Torrent
   Data.Torrent.Scrape

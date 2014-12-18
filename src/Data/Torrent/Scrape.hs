@@ -9,6 +9,9 @@
 -- Portability :  portable
 --
 -----------------------------------------------------------------------------
+
+{-# LANGUAGE PatternGuards #-}
+
 module Data.Torrent.Scrape
     ( ScrapeInfo(..)
     , parseScrapeInfo
