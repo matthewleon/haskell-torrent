@@ -1,14 +1,13 @@
 {-# LANGUAGE DeriveDataTypeable #-}
+
 module Data.Torrent
     ( Torrent(..)
     , TorrentInfo(..)
     , TorrentFile(..)
-    , readTorrent      -- :: ByteString -> Either String Torrent
+    , readTorrent
     , serializeTorrent
-    , torrentSize      -- :: Torrent -> Int
+    , torrentSize
     ) where
-
--- import Network.URI
 
 import Data.BEncode
 import Data.BEncode.Parser
@@ -61,14 +60,6 @@ torrentSize torrent
     = case tInfo torrent of
         s@SingleFile{} -> tLength s
         MultiFile{tFiles=files} -> sum (map fileLength files)
-
-{-
-buri :: BParser BEncode -> BParser URI
-buri p = do str <- bstring p
-            case parseURI str of
-              Nothing -> fail $ "Expected URI: " ++ str
-              Just uri -> return uri
--}
 
 readTorrent :: ByteString -> Either String Torrent
 readTorrent inp
