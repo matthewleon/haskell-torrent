@@ -9,9 +9,7 @@ License: BSD3
 Build-Type: Simple
 Category: Network
 Extra-Source-Files: CHANGELOG
-Synopsis: BitTorrent file parser
-Description:
- A simple parser for torrent files.
+Synopsis: BitTorrent file parser and generater
 
 Library
   GHC-Options: -Wall -Werror
