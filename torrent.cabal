@@ -5,7 +5,7 @@ Author: Lemmih <lemmih@gmail.com>
 Copyright: 2005-2007, Lemmih
 License-File: LICENSE
 License: BSD3
-Build-Depends: base, binary, bencode >=0.2, filepath, network, containers, bytestring, syb
+Build-Depends: base, binary, bencode >=0.2, filepath, containers, bytestring, syb
 Build-Type: Simple
 Category: Network
 Synopsis: BitTorrent file parser
