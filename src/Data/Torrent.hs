@@ -58,6 +58,7 @@ instance Binary Torrent where
 			Left err -> fail $ "Failed to parse torrent: " ++ err
 			Right t  -> return t
 
+-- | Size of the files in the torrent.
 torrentSize :: Torrent -> Int
 torrentSize torrent = case tInfo torrent of
 	s@SingleFile{} -> tLength s
