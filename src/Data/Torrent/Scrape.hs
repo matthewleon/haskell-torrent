@@ -8,6 +8,7 @@
 -- Stability   :  experimental
 -- Portability :  portable
 --
+-- <http://en.wikipedia.org/wiki/Tracker_scrape>
 -----------------------------------------------------------------------------
 
 {-# LANGUAGE PatternGuards #-}
