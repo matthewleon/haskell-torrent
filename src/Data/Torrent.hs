@@ -1,3 +1,7 @@
+-- | BitTorrent metainfo files
+--
+-- <http://www.bittorrent.org/beps/bep_0003.html>
+
 {-# LANGUAGE DeriveDataTypeable #-}
 
 module Data.Torrent
@@ -7,6 +11,7 @@ module Data.Torrent
 	, readTorrent
 	, serializeTorrent
 	, torrentSize
+	, showTorrent
 	) where
 
 import Data.BEncode
@@ -115,3 +120,12 @@ serializeTorrent torrent = BDict $ Map.fromList
 		[ ("length", BInt (fileLength file))
 		, ("path", BList (map BString $ filePath file))
 		]
+
+-- | generates a torrent file
+--
+-- Due to lexographical ordering requirements of BEncoded data, this
+-- should generate the same ByteString that readTorrent read to generate
+-- the Torrent. However, torrent files may contain extensions and
+-- nonstandard fields that prevent that from holding for all torrent files.
+showTorrent :: Torrent -> ByteString
+showTorrent = bPack . serializeTorrent

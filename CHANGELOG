@@ -1,3 +1,9 @@
+haskell-torrent (10000.0.1) UNRELEASED; urgency=medium
+
+  * Added showTorrent.
+
+ -- Joey Hess <id@joeyh.name>  Sat, 20 Dec 2014 14:24:13 -0400
+
 haskell-torrent (10000.0.0) unstable; urgency=medium
 
   * Taking over upstream maintenance of this package.
