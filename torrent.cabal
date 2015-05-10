@@ -12,7 +12,7 @@ Extra-Source-Files: CHANGELOG
 Synopsis: BitTorrent file parser and generater
 
 Library
-  GHC-Options: -Wall
+  GHC-Options: -Wall -fno-warn-tabs
   Hs-Source-Dirs: src
   Exposed-Modules:
     Data.Torrent
