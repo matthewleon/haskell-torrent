@@ -15,9 +15,10 @@ module Data.Torrent
 	) where
 
 import Data.BEncode
-import Data.BEncode.Parser
+import Data.BEncode.Reader
 import Data.Binary
 import Data.Generics
+import Control.Applicative ((<|>))
 
 import qualified Data.ByteString.Lazy as BS
 import Data.ByteString.Lazy (ByteString)
@@ -27,7 +28,7 @@ import qualified Data.Map as Map
 data Torrent
 	= Torrent
 		{ tAnnounce     :: ByteString
-		, tAnnounceList :: [ByteString]
+		, tAnnounceList :: [[ByteString]]
 		, tComment      :: ByteString
 		, tCreatedBy    :: Maybe ByteString
 		, tInfo         :: TorrentInfo
@@ -72,30 +73,30 @@ torrentSize torrent = case tInfo torrent of
 readTorrent :: ByteString -> Either String Torrent
 readTorrent inp = case bRead inp of
 	Nothing -> Left "Not BEncoded"
-	Just be -> runParser parseTorrent be
+	Just be -> runBReader parseTorrent be
 
-parseTorrent :: BParser Torrent
+parseTorrent :: BReader Torrent
 parseTorrent = do
-	announce <- bbytestring $ dict "announce"
-	creator <- optional $ bbytestring $ dict "created by"
-	info <- dict "info"
-	setInput info
-	name <- bbytestring $ dict "name"
-	pLen <- bint $ dict "piece length"
-	pieces <- bbytestring $ dict "pieces"
-	torrentInfo <- parseTorrentInfo name pLen pieces
-	return $ Torrent announce [] BS.empty creator torrentInfo
+	announce <- dict "announce" bbytestring
+	announceList <- dict "announce-list" (list $ list bbytestring)
+	creator <- optional $ dict "created by" bbytestring
+	torrentInfo <- dict "info" $ do
+		name <- dict "name" bbytestring
+		pLen <- dict "piece length" bint
+		pieces <- dict "pieces" bbytestring
+		parseTorrentInfo name pLen pieces
+	return $ Torrent announce announceList BS.empty creator torrentInfo
 
-parseTorrentInfo :: ByteString -> Integer -> ByteString -> BParser TorrentInfo
+parseTorrentInfo :: ByteString -> Integer -> ByteString -> BReader TorrentInfo
 parseTorrentInfo name pLen pieces = single <|> multi
   where
 	single = do
-		len <- bint $ dict "length"
+		len <- dict "length" bint
 		return $ SingleFile len name pLen pieces
 	multi = do
-		files <- list "files" $ do
-			len <- bint $ dict "length"
-			filePaths <- list "path" $ bbytestring token
+		files <- dict "files" $ list $ do
+			len <- dict "length" bint
+			filePaths <- dict "path" $ list bbytestring
 			return $ TorrentFile len filePaths
 		return $ MultiFile files name pLen pieces
 
